@@ -1,0 +1,32 @@
+﻿@implements IDisposable
+@inject ICarrinhoCompraService carrinhoCompraService
+
+<a href="CarrinhoCompra" class="btn btn-info">
+    <i class="oi oi-cart"></i>&nbsp;Carrinho
+    <span class="badge bg-dark">@carrinhoCompraItemContador</span>
+    <span> | </span>
+    <span class="badge bg-dark">(@carrinhoCompraItemValor.ToString("C"))</span>
+</a>
+
+
+@code {
+    private int carrinhoCompraItemContador = 0;
+    private decimal carrinhoCompraItemValor = 0;
+
+    protected override void OnInitialized()
+    {
+        carrinhoCompraService.OnCarrinhoCompraChanged += CarrinhoCompraChanged;
+    }
+
+    protected void CarrinhoCompraChanged(int totalQuantidade, decimal totalValor)
+    {
+        carrinhoCompraItemContador = totalQuantidade;
+        carrinhoCompraItemValor = totalValor;
+        StateHasChanged();
+    }
+
+    void IDisposable.Dispose()
+    {
+        carrinhoCompraService.OnCarrinhoCompraChanged -= CarrinhoCompraChanged;
+    }
+}
